@@ -3,7 +3,7 @@
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
-    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in">Connecter</string>
     <string name="action_sign_in_short">Sign in</string>
     <string name="welcome">"Welcome !"</string>
     <string name="invalid_username">Not a valid username</string>
@@ -11,8 +11,8 @@
     <string name="login_failed">"Login failed"</string>
     <string name="title_activity_menu">MenuActivity</string>
     <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">First Fragment</string>
-    <string name="second_fragment_label">Second Fragment</string>
+    <string name="first_fragment_label">Menu principale</string>
+    <string name="second_fragment_label">Parametrage</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
     <string name="parametrage">Parametrage</string>

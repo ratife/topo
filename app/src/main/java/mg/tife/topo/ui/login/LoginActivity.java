@@ -44,7 +44,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         db = DB.getInstance(getApplicationContext());
-       // db.insertUser("tife","111111","RATIFE","KELY");
+        //db.insertUser("tife","111111","RATIFE","KELY");
         /*SQLiteDatabase dbH = db.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
@@ -64,6 +64,8 @@ public class LoginActivity extends AppCompatActivity {
         final EditText passwordEditText = binding.password;
         final Button loginButton = binding.login;
         final ProgressBar loadingProgressBar = binding.loading;
+        usernameEditText.setText("tife");
+        passwordEditText.setText("11111");
 
         loginViewModel.getLoginFormState().observe(this, new Observer<LoginFormState>() {
             @Override

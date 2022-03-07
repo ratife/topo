@@ -9,18 +9,20 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
 import mg.tife.topo.data.model.LoggedInUser;
 import mg.tife.topo.data.model.Record;
+import mg.tife.topo.data.model.RecordItem;
 
 public class DB extends SQLiteOpenHelper {
     private static DB INSTANCE;
     public static LoggedInUser userConnecte;
     public static final String DATABASE_NAME = "topo.db";
-    public static final int DATABASE_VERSION = 12;
+    public static final int DATABASE_VERSION = 13;
 
     public static final String COLUMN_DATE_CREATION = "date_create";
     public static final String COLUMN_DATE_UPDATE = "date_update";
@@ -43,6 +45,8 @@ public class DB extends SQLiteOpenHelper {
     public static final String RECORD_ITEM_COLUMN_DISTANCE = "distance";
     public static final String RECORD_ITEM_COLUMN_OBSERVATION = "observation";
 
+    public Long recordItemId;
+
     private HashMap hp;
 
     //private SQLiteDatabase db;
@@ -59,17 +63,17 @@ public class DB extends SQLiteOpenHelper {
 
         db.execSQL(
                 "create table "+USER_TABLE_NAME+" " +
-                        "("+COLUMN_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+USER_COLUMN_LOGIN+" text,"+USER_COLUMN_PASSWORD+" text,"+USER_COLUMN_NOM+" text, "+USER_COLUMN_PRENOM+" text,"+COLUMN_DATE_CREATION+" text)"
+                        "("+COLUMN_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+USER_COLUMN_LOGIN+" text,"+USER_COLUMN_PASSWORD+" text,"+USER_COLUMN_NOM+" text, "+USER_COLUMN_PRENOM+" text,"+COLUMN_DATE_CREATION+" text,"+COLUMN_DATE_UPDATE+" text)"
         );
         db.execSQL(
                 "create table "+RECORD_TABLE_NAME+" " +
-                        "("+COLUMN_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+RECORD_COLUMN_LTX+" text,"+RECORD_COLUMN_LOTISSEMENT+" text,"+RECORD_COLUMN_USER_ID+" integer,"+COLUMN_DATE_CREATION+" text)"
+                        "("+COLUMN_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+RECORD_COLUMN_LTX+" text,"+RECORD_COLUMN_LOTISSEMENT+" text,"+RECORD_COLUMN_USER_ID+" integer,"+COLUMN_DATE_CREATION+" text,"+COLUMN_DATE_UPDATE+" text)"
         );
         db.execSQL(
                 "create table "+RECORD_ITEM_TABLE_NAME+" " +
-                        "("+COLUMN_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+RECORD_ITEM_COLUMN_ANGLE+" text,"+RECORD_ITEM_COLUMN_DISTANCE+" text,"+RECORD_ITEM_COLUMN_OBSERVATION+" text,"+RECORD_ITEM_COLUMN_ID_RECORD+" integer,"+COLUMN_DATE_CREATION+" text)"
+                        "("+COLUMN_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+RECORD_ITEM_COLUMN_ANGLE+" text,"+RECORD_ITEM_COLUMN_DISTANCE+" text,"+RECORD_ITEM_COLUMN_OBSERVATION+" text,"+RECORD_ITEM_COLUMN_ID_RECORD+" integer,"+COLUMN_DATE_CREATION+" text,"+COLUMN_DATE_UPDATE+" text)"
         );
-        //insertUser("tife","111111","RATIFE","KELY");
+        // insertUser("tife","111111","RATIFE","KELY");
        // insertUser("lita","111111","LITA","KELY");
     }
 
@@ -186,6 +190,96 @@ public class DB extends SQLiteOpenHelper {
         List<Record> ret = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res =  db.rawQuery( "select * from " + RECORD_TABLE_NAME, null );
+        res.moveToFirst();
+
+        while(res.isAfterLast() == false){
+            ret.add(new Record(res.getLong(0),res.getString(1),res.getString(2)));
+            //array_list.add(res.getString(res.getColumnIndex(CONTACTS_COLUMN_NAME)));
+            res.moveToNext();
+        }
+        return ret;
+    }
+
+    public void updateRecord(Long record_id, String ltxTxt, String lotTxt) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(RECORD_COLUMN_LTX, ltxTxt);
+        contentValues.put(RECORD_COLUMN_LOTISSEMENT, lotTxt);
+        contentValues.put(COLUMN_DATE_UPDATE, Calendar.getInstance().getTime().toString());
+        db.update(RECORD_TABLE_NAME, contentValues,"id=?", new String[]{record_id+""});
+    }
+
+    public void createRecordItem(String angleTxt, String distTxt, String obsTxt, Long record_id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(RECORD_ITEM_COLUMN_ANGLE, angleTxt);
+        contentValues.put(RECORD_ITEM_COLUMN_DISTANCE, distTxt);
+        contentValues.put(RECORD_ITEM_COLUMN_OBSERVATION, obsTxt);
+        contentValues.put(RECORD_ITEM_COLUMN_ID_RECORD, record_id);
+
+        contentValues.put(COLUMN_DATE_CREATION, Calendar.getInstance().getTime().toString());
+        db.insert(RECORD_ITEM_TABLE_NAME, null, contentValues);
+    }
+
+    public List<RecordItem> getListRecordItem(Long record_id) {
+        List<RecordItem> ret = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res =  db.rawQuery( "select * from " + RECORD_ITEM_TABLE_NAME +" where "+RECORD_ITEM_COLUMN_ID_RECORD+"=?", new String[]{record_id+""} );
+        res.moveToFirst();
+
+        while(res.isAfterLast() == false){
+            ret.add(new RecordItem(res.getLong(0),res.getFloat(1),res.getFloat(2),res.getString(3),res.getLong(4)));
+            //array_list.add(res.getString(res.getColumnIndex(CONTACTS_COLUMN_NAME)));
+            res.moveToNext();
+        }
+        return ret;
+    }
+
+    public void deleteRecordItem(Long id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(RECORD_ITEM_TABLE_NAME,
+                "id = ? ",
+                new String[] { id+""});
+    }
+
+    public Record getRecord(Long record_id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res =  db.rawQuery( "select * from " + RECORD_TABLE_NAME +" where "+COLUMN_ID+"=?", new String[]{record_id+""} );
+        res.moveToFirst();
+        Record rc = new Record(res.getLong(0),res.getString(1),res.getString(2));
+        return rc;
+    }
+
+    public void setCurrentRecordItemId(Long id) {
+        recordItemId = id;
+    }
+
+    public Long getCurrentRecordItemId(){
+        return recordItemId;
+    }
+
+    public void updateRecordItem(Long currentRecordItemId, String angleTxt, String distTxt, String obsTxt) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(RECORD_ITEM_COLUMN_ANGLE, angleTxt);
+        contentValues.put(RECORD_ITEM_COLUMN_DISTANCE, distTxt);
+        contentValues.put(RECORD_ITEM_COLUMN_OBSERVATION, obsTxt);
+        contentValues.put(COLUMN_DATE_UPDATE, Calendar.getInstance().getTime().toString());
+        db.update(RECORD_ITEM_TABLE_NAME, contentValues,"id=?", new String[]{currentRecordItemId+""});
+    }
+
+    public int getNbrRecordItem(Long record_id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res =  db.rawQuery( "select count(*) from " + RECORD_ITEM_TABLE_NAME +" where "+RECORD_ITEM_COLUMN_ID_RECORD+"=?", new String[]{record_id+""} );
+        res.moveToFirst();
+        return res.getInt(0);
+    }
+
+    public List<Record> findRecord(String txt) {
+        List<Record> ret = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res =  db.rawQuery( "select * from " + RECORD_TABLE_NAME +" where "+RECORD_COLUMN_LTX+" like ? or "+RECORD_COLUMN_LOTISSEMENT+" like ?", new String[]{"%"+txt+"%","%"+txt+"%"}  );
         res.moveToFirst();
 
         while(res.isAfterLast() == false){
