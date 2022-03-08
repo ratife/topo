@@ -2,6 +2,7 @@ package mg.tife.topo.ui.adapter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AlertDialog;
 
 import java.util.List;
 
@@ -43,12 +46,32 @@ public class RecordItemAdapter extends ArrayAdapter<RecordItem> {
         //LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         convertView.findViewById(R.id.recordITemBtnItemExp).setOnClickListener((e)->{
-            db.deleteRecordItem(recordItem.getId());
-            Activity act = (Activity)getContext();
-            act.finish();
-            Intent intent = new Intent(getContext(), RecordItemActivity.class);
-            intent.putExtra(DB.COLUMN_ID, recordItem.getRecordId());
-            getContext().startActivity(intent);
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            builder.setCancelable(true);
+            builder.setTitle("Confirmation");
+            builder.setMessage("Voulez vous supprimer cette ligne : " + recordItem.getAngle() + " - "+recordItem.getDistance() + " ?");
+            builder.setPositiveButton("Confirm",
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            db.deleteRecordItem(recordItem.getId());
+                            Activity act = (Activity)getContext();
+                            act.finish();
+                            Intent intent = new Intent(getContext(), RecordItemActivity.class);
+                            intent.putExtra(DB.COLUMN_ID, recordItem.getRecordId());
+                            getContext().startActivity(intent);
+                        }
+                    });
+            builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                }
+            });
+
+            AlertDialog dialog = builder.create();
+            dialog.show();
+
+
         });
         convertView.findViewById(R.id.recordITemBtnItemEdit).setOnClickListener((View v)->{
             Activity act = (Activity)getContext();

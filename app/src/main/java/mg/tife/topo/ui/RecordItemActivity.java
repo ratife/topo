@@ -46,6 +46,8 @@ public class RecordItemActivity extends AppCompatActivity {
     private Long record_id;
     private SpeechRecognizer speechRecognizer;
 
+    private EditText speechEditorText;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -129,9 +131,21 @@ public class RecordItemActivity extends AppCompatActivity {
             listView1.setAdapter(new RecordItemAdapter(this,recordItems1));
         });
 
+        speechEditorText = editTextAngle;
+
+        editTextAngle.setOnFocusChangeListener((view,v)->{
+            speechEditorText = editTextAngle;
+        });
+        editTextDist.setOnFocusChangeListener((view,v)->{
+            speechEditorText = editTextDist;
+        });
+        editTextObs.setOnFocusChangeListener((view,v)->{
+            speechEditorText = editTextObs;
+        });
+
         final Intent speechRecognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         speechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-        speechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+        speechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "fr-FR");
 
         speechRecognizer.setRecognitionListener(new RecognitionListener() {
             @Override
@@ -141,8 +155,11 @@ public class RecordItemActivity extends AppCompatActivity {
 
             @Override
             public void onBeginningOfSpeech() {
-                editTextAngle.setText("");
-                editTextAngle.setHint("Listening...");
+                editTextAngle.setHint("Angle");
+                editTextDist.setHint("Distance");
+                editTextObs.setHint("Observation");
+                speechEditorText.setText("");
+                speechEditorText.setHint("Listening...");
             }
 
             @Override
@@ -168,7 +185,7 @@ public class RecordItemActivity extends AppCompatActivity {
             @Override
             public void onResults(Bundle bundle) {
                 ArrayList<String> data = bundle.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
-                editTextAngle.setText(data.get(0));
+                speechEditorText.setText(data.get(0));
             }
 
             @Override
