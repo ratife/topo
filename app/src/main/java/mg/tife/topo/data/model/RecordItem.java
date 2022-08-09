@@ -2,17 +2,15 @@ package mg.tife.topo.data.model;
 
 public class RecordItem {
     private Long id;
-    private Float angle;
+    private Float angleH;
+    private Float angelV;
     private Float distance;
+    private String stantion;
     private String observation;
     private Long recordId;
 
-    public RecordItem(Long id,Float angle, Float distance, String observation, Long recordId) {
+    public RecordItem(Long id) {
         this.id = id;
-        this.angle = angle;
-        this.distance = distance;
-        this.observation = observation;
-        this.recordId = recordId;
     }
 
     public Long getId() {
@@ -23,12 +21,20 @@ public class RecordItem {
         this.id = id;
     }
 
-    public Float getAngle() {
-        return angle;
+    public Float getAngleH() {
+        return angleH;
     }
 
-    public void setAngle(Float angle) {
-        this.angle = angle;
+    public void setAngleH(Float angleH) {
+        this.angleH = angleH;
+    }
+
+    public Float getAngelV() {
+        return angelV;
+    }
+
+    public void setAngelV(Float angelV) {
+        this.angelV = angelV;
     }
 
     public Float getDistance() {
@@ -37,6 +43,14 @@ public class RecordItem {
 
     public void setDistance(Float distance) {
         this.distance = distance;
+    }
+
+    public String getStantion() {
+        return stantion;
+    }
+
+    public void setStantion(String stantion) {
+        this.stantion = stantion;
     }
 
     public String getObservation() {

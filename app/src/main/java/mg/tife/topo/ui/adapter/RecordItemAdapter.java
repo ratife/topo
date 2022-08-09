@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -18,7 +19,7 @@ import java.util.List;
 import mg.tife.topo.R;
 import mg.tife.topo.data.DB;
 import mg.tife.topo.data.model.RecordItem;
-import mg.tife.topo.ui.RecordItemActivity;
+import mg.tife.topo.activities.record.*;
 
 public class RecordItemAdapter extends ArrayAdapter<RecordItem> {
     DB db;
@@ -26,19 +27,21 @@ public class RecordItemAdapter extends ArrayAdapter<RecordItem> {
         super(context, 0, users);
         db = DB.getInstance(context);
     }
-
-
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         RecordItem recordItem = getItem(position);
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.list_item_record_item, parent, false);
         }
-        TextView angleView = (TextView) convertView.findViewById(R.id.recordItemAngleView);
-        TextView distanceView = (TextView) convertView.findViewById(R.id.recordItemDistanceView);
+        TextView recordItemStantionView = (TextView) convertView.findViewById(R.id.recordItemStantionView);
+        TextView recordItemNumeroView = (TextView) convertView.findViewById(R.id.recordItemNumeroView);
+        TextView recordItemAngleView = (TextView) convertView.findViewById(R.id.recordItemItemAngleView);
+        TextView recordItemObsView = (TextView) convertView.findViewById(R.id.recordItemObsView);
 
-        angleView.setText(recordItem.getAngle()+"");
-        distanceView.setText(recordItem.getDistance()+"");
+        recordItemStantionView.setText(recordItem.getStantion());
+        recordItemNumeroView.setText(position+"");
+        recordItemAngleView.setText(recordItem.getAngelV() + " - "+recordItem.getAngleH()+" - "+recordItem.getDistance());
+        recordItemObsView.setText(recordItem.getObservation()+"");
 
         View vi = convertView;
         final TextView textView;
@@ -49,7 +52,7 @@ public class RecordItemAdapter extends ArrayAdapter<RecordItem> {
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
             builder.setCancelable(true);
             builder.setTitle("Confirmation");
-            builder.setMessage("Voulez vous supprimer cette ligne : " + recordItem.getAngle() + " - "+recordItem.getDistance() + " ?");
+            builder.setMessage("Voulez vous supprimer cette ligne : " + recordItem.getAngelV() + " - "+recordItem.getAngleH()+" - "+recordItem.getDistance() + " ?");
             builder.setPositiveButton("Confirm",
                     new DialogInterface.OnClickListener() {
                         @Override
@@ -57,7 +60,7 @@ public class RecordItemAdapter extends ArrayAdapter<RecordItem> {
                             db.deleteRecordItem(recordItem.getId());
                             Activity act = (Activity)getContext();
                             act.finish();
-                            Intent intent = new Intent(getContext(), RecordItemActivity.class);
+                            Intent intent = new Intent(getContext(), RecordItem3Activity.class);
                             intent.putExtra(DB.COLUMN_ID, recordItem.getRecordId());
                             getContext().startActivity(intent);
                         }
@@ -75,12 +78,18 @@ public class RecordItemAdapter extends ArrayAdapter<RecordItem> {
         });
         convertView.findViewById(R.id.recordITemBtnItemEdit).setOnClickListener((View v)->{
             Activity act = (Activity)getContext();
-            EditText angle = (EditText) act.findViewById(R.id.editTextAngle);
-            angle.setText(recordItem.getAngle()+"");
-            EditText dist = (EditText) act.findViewById(R.id.editTextDist);
-            dist.setText(recordItem.getDistance()+"");
-            EditText obs = (EditText) act.findViewById(R.id.editTextObs);
-            obs.setText(recordItem.getObservation()+"");
+            EditText editTextAngleH = (EditText) act.findViewById(R.id.editTextAngleH);
+            EditText editTextAngleV = (EditText) act.findViewById(R.id.editTextAngleV);
+            EditText editTextDistance = (EditText) act.findViewById(R.id.editTextDistance);
+            TextView textViewStantion = (TextView) act.findViewById(R.id.textViewStantion);
+            EditText editTextObservation = (EditText) act.findViewById(R.id.editTextObservation);
+
+            editTextAngleH.setText(recordItem.getAngleH()+"");
+            editTextAngleV.setText(recordItem.getAngelV()+"");
+            editTextDistance.setText(recordItem.getDistance()+"");
+            textViewStantion.setText(recordItem.getStantion());
+            editTextObservation.setText(recordItem.getObservation());
+
             db.setCurrentRecordItemId(recordItem.getId());
         });
         return convertView;

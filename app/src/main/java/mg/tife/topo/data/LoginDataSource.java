@@ -13,11 +13,11 @@ public class LoginDataSource {
 
         try {
             // TODO: handle loggedInUser authentication
-            LoggedInUser fakeUser =
+            /*LoggedInUser fakeUser =
                     new LoggedInUser(
                             1,
-                            "Jane Doe");
-            return new Result.Success<>(fakeUser);
+                            "Jane Doe");*/
+            return new Result.Success<>(null);
         } catch (Exception e) {
             return new Result.Error(new IOException("Error logging in", e));
         }

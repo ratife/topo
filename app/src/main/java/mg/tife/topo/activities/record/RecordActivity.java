@@ -1,8 +1,4 @@
-package mg.tife.topo.ui;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
+package mg.tife.topo.activities.record;
 
 import android.Manifest;
 import android.content.Intent;
@@ -12,9 +8,12 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import java.util.List;
 
@@ -35,7 +34,7 @@ public class RecordActivity extends AppCompatActivity {
         setContentView(R.layout.activity_record);
         db = DB.getInstance(getApplicationContext());
         findViewById(R.id.btnAddRecord).setOnClickListener((e)->{
-            Intent intent = new Intent(this, RecordItemActivity.class);
+            Intent intent = new Intent(this, RecordItem1Activity.class);
             startActivity(intent);
         });
         findViewById(R.id.imageButtonRecordSearch).setOnClickListener((e)->{
@@ -50,12 +49,10 @@ public class RecordActivity extends AppCompatActivity {
 
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
             }
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
             }
 
             @Override
@@ -66,10 +63,6 @@ public class RecordActivity extends AppCompatActivity {
                 listView.setAdapter(new RecordAdapter(getApplicationContext(),records));
             }
         });
-
-
-
-
     }
 
     @Override

@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.os.Environment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -24,6 +25,8 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.io.File;
 
 import mg.tife.topo.R;
 import mg.tife.topo.data.DB;
@@ -44,7 +47,11 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         db = DB.getInstance(getApplicationContext());
-        //db.insertUser("tife","111111","RATIFE","KELY");
+        if(db.getNbrUser()==0){
+            db.insertUser("tolotra","111111","Tolotra","Soja","admin");
+            db.updateParam(Environment.DIRECTORY_DOWNLOADS + "/topo/","clair");
+        }
+
         /*SQLiteDatabase dbH = db.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
@@ -63,8 +70,8 @@ public class LoginActivity extends AppCompatActivity {
         final EditText usernameEditText = binding.username;
         final EditText passwordEditText = binding.password;
         final Button loginButton = binding.login;
-        final ProgressBar loadingProgressBar = binding.loading;
-        usernameEditText.setText("tife");
+
+        usernameEditText.setText("tolotra");
         passwordEditText.setText("11111");
 
         loginViewModel.getLoginFormState().observe(this, new Observer<LoginFormState>() {
@@ -89,11 +96,11 @@ public class LoginActivity extends AppCompatActivity {
                 if (loginResult == null) {
                     return;
                 }
-                loadingProgressBar.setVisibility(View.GONE);
                 if (loginResult.getError() != null) {
                     showLoginFailed(loginResult.getError());
                 }
                 if (loginResult.getSuccess() != null) {
+                    db.setUserConnected(loginResult.getSuccess().getId());
                     updateUiWithUser(loginResult.getSuccess());
                     setResult(Activity.RESULT_OK);
                     finish();
@@ -138,7 +145,6 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                loadingProgressBar.setVisibility(View.VISIBLE);
                 loginViewModel.login(usernameEditText.getText().toString(),
                         passwordEditText.getText().toString(),db);
             }
@@ -153,7 +159,10 @@ public class LoginActivity extends AppCompatActivity {
         Intent intent = new Intent(this, MenuActivity.class);
         //EditText editText = (EditText) findViewById(R.id.editTextTextPersonName);
         //String message = editText.getText().toString();
-        //intent.putExtra(EXTRA_MESSAGE, message);
+
+        intent.putExtra("id", model.getId());
+        intent.putExtra("name", model.getDisplayName());
+        intent.putExtra("role", model.getRole());
         startActivity(intent);
 
     }

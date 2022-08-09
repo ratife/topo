@@ -1,6 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Formulaire utilisateur"
+        android:textSize="20sp" />
+
+    <EditText
+        android:id="@+id/editTextFormNom"
+        android:layout_width="match_parent"
+        android:layout_height="59dp"
+        android:text=""
+        android:hint="Nom"/>
+
+    <EditText
+        android:id="@+id/editTextFormPrenom"
+        android:layout_width="match_parent"
+        android:layout_height="59dp"
+        android:text=""
+        android:hint="Prenom"/>
+
+    <EditText
+        android:id="@+id/editTextFormEmailAddress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textEmailAddress"
+        android:text=""
+        android:hint="Email"/>
+
+    <EditText
+        android:id="@+id/editTextFormPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPassword"
+        android:text=""
+        android:hint="mot de passe"/>
+
+    <EditText
+        android:id="@+id/editTextFormPassword2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPassword"
+        android:text=""
+
+        android:hint="confirmation mot de passe"/>
+
+    <CheckBox
+        android:id="@+id/editTextFormRole"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Admin" />
+
+    <ImageButton
+        android:id="@+id/btnUserSave"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:srcCompat="@android:drawable/ic_menu_save" />
 
 </LinearLayout>

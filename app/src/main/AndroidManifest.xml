@@ -2,32 +2,80 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="mg.tife.topo">
 
-    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/logo"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/logo"
         android:supportsRtl="true"
         android:theme="@style/Theme.Topo">
+
+        <!--
+             TODO: Before you run your application, you need a Google Maps API key.
+
+             To get one, follow the directions here:
+
+                https://developers.google.com/maps/documentation/android-sdk/get-api-key
+
+             Once you have your API key (it starts with "AIza"), define a new property in your
+             project's local.properties file (e.g. MAPS_API_KEY=Aiza...), and replace the
+             "YOUR_API_KEY" string in this file with "${MAPS_API_KEY}".
+        -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="YOUR_API_KEY" />
+
         <activity
-            android:name=".ui.RecordItemActivity"
-            android:exported="false" />
+            android:name=".activities.MapsActivity"
+            android:exported="false"
+            android:label="@string/title_activity_maps" />
         <activity
-            android:name=".ui.RecordActivity"
-            android:exported="false" />
+            android:name=".activities.ParametreActivity"
+            android:exported="false"
+            android:label="PARAMETRES" />
         <activity
             android:name=".ui.menu.MenuActivity"
             android:exported="false"
-            android:label="@string/title_activity_menu"
+            android:label=""
             android:theme="@style/Theme.Topo.NoActionBar" />
+        <activity
+            android:name=".activities.record.RecordActivity"
+            android:exported="false"
+            android:label="Liste enregistrement" />
+        <activity
+            android:name=".activities.record.RecordItem1Activity"
+            android:exported="false"
+            android:label="Information générale" />
+        <activity
+            android:name=".activities.record.RecordItem2Activity"
+            android:exported="false"
+            android:label="Donnée initiales" />
+        <activity
+            android:name=".activities.record.RecordItem3Activity"
+            android:exported="false"
+            android:label="Lecture de données" />
+        <activity
+            android:name=".activities.user.UserActivity"
+            android:exported="false"
+            android:label="Liste utilisateur" />
+        <activity
+            android:name=".activities.user.UserFormActivity"
+            android:exported="false"
+            android:label="Formulaire utilisateur" />
+        <activity
+            android:name=".activities.AboutActivity"
+            android:exported="false"
+            android:label="Apropos" />
+
         <activity
             android:name=".ui.login.LoginActivity"
             android:exported="true"
-            android:label="@string/app_name">
+            android:label="TopoTech">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

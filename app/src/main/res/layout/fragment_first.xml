@@ -4,28 +4,65 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    app:flow_verticalAlign="top"
     tools:context=".FirstFragment">
 
-    <Button
-        android:id="@+id/btnSetting"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/idLayoutMenu"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="340dp"
-        android:text="@string/parametrage"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:layout_marginTop="5dp"
+        android:orientation="vertical"
+        app:barrierDirection="top"
+        app:chainUseRtl="false"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="169dp">
 
-    <Button
-        android:id="@+id/btnRec"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="ENREGISTREMENT"
-        android:layout_marginBottom="440dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"/>
+
+        <Button
+            android:id="@+id/btnRec"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:backgroundTintMode="add"
+            android:text="ENREGISTREMENT"
+            app:icon="@android:drawable/ic_input_get" />
+
+        <Button
+            android:id="@+id/btnUser"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:text="Gestion utilisateur"
+            app:icon="@android:drawable/ic_menu_myplaces" />
+
+        <Button
+            android:id="@+id/btnProfil"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:text="Profil"
+            app:icon="@android:drawable/ic_menu_my_calendar" />
+
+        <Button
+            android:id="@+id/btnSetting"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:text="@string/parametrage"
+            app:icon="@android:drawable/ic_menu_manage" />
+
+        <Button
+            android:id="@+id/btnAbout"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:text="A propos"
+            app:icon="@android:drawable/ic_dialog_info" />
+
+        <Button
+            android:id="@+id/btnDeconnect"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:text="Deconnecter"
+            app:icon="@android:drawable/ic_lock_power_off" />
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

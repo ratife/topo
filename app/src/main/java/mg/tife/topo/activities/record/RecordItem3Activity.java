@@ -1,6 +1,7 @@
 package mg.tife.topo.activities.record;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -25,20 +26,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mg.tife.topo.R;
+import mg.tife.topo.activities.MapsActivity;
 import mg.tife.topo.data.DB;
 import mg.tife.topo.data.model.Record;
 import mg.tife.topo.data.model.RecordItem;
 import mg.tife.topo.ui.adapter.RecordItemAdapter;
+import mg.tife.topo.util.Utils;
 
-public class RecordItem2Activity extends AppCompatActivity {
+public class RecordItem3Activity extends AppCompatActivity {
     public static final Integer RecordAudioRequestCode = 1;
     DB db;
-    private EditText ltx;
-    private EditText lotissement;
-    private EditText editTextAngle;
-    private EditText editTextDist;
-    private EditText editTextObs;
-    private EditText editTextCode;
+    private EditText editTextAngleH;
+    private EditText editTextAngleV;
+    private EditText editTextDistance;
+    private TextView textStantion;
+    private EditText editTextObservation;
+
     private ImageButton imageButtonRec;
     private TextView textViewRecordStat;
     private Long record_id;
@@ -54,109 +57,121 @@ public class RecordItem2Activity extends AppCompatActivity {
         }
         speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
 
-        setContentView(R.layout.activity_record_item1);
+        setContentView(R.layout.activity_record_item3);
 
-        ltx = (EditText) findViewById(R.id.editTextX);
-        lotissement = (EditText) findViewById(R.id.editTextY);
-        editTextAngle = (EditText) findViewById(R.id.editTextAngle);
-        editTextDist = (EditText) findViewById(R.id.editTextDist);
-        editTextObs = (EditText) findViewById(R.id.editTextObs);
-        editTextCode = (EditText) findViewById(R.id.editTextCode);
-        imageButtonRec = (ImageButton) findViewById(R.id.imageButtonRec);
-        textViewRecordStat = (TextView) findViewById(R.id.textViewRecordStat);
+        editTextAngleH = (EditText) findViewById(R.id.editTextAngleH);
+        editTextAngleV = (EditText) findViewById(R.id.editTextAngleV);
+        editTextDistance = (EditText) findViewById(R.id.editTextDistance);
+        textStantion = (TextView) findViewById(R.id.textViewStantion);
+        editTextObservation = (EditText) findViewById(R.id.editTextObservation);
+        textViewRecordStat = (TextView) findViewById(R.id.textViewStatus);
+        imageButtonRec = (ImageButton)findViewById(R.id.imageButtonActiveAudio);
 
         db = DB.getInstance(getApplicationContext());
         db.setCurrentRecordItemId(null);
 
         record_id = getIntent().getLongExtra(DB.COLUMN_ID,0);
+
         if(record_id>0){
-            Record record = db.getRecord(record_id);
             List<RecordItem> recordItems  = db.getListRecordItem(record_id);
             ListView listView = (ListView)findViewById(R.id.listViewItemRecordItem);
             listView.setAdapter(new RecordItemAdapter(this,recordItems));
-            String record_ltx = record.getLtx();
-            String record_lotissement = record.getLotissement();
-            ltx.setText(record_ltx);
-            lotissement.setText(record_lotissement);
-            findViewById(R.id.contAddItem1).setVisibility(View.VISIBLE);
-            findViewById(R.id.contAddItem2).setVisibility(View.VISIBLE);
-            findViewById(R.id.contAddItem3).setVisibility(View.VISIBLE);
-            findViewById(R.id.contAddItem4).setVisibility(View.VISIBLE);
-            findViewById(R.id.listViewItemRecordItem).setVisibility(View.VISIBLE);
         }
 
-        findViewById(R.id.btnSaveRecord).setOnClickListener((e)->{
-            String ltxTxt  = ltx.getText().toString();
-            String lotTxt = lotissement.getText().toString();
-            if(ltxTxt.trim().equals("")){
-                ltx.setError("LTX obligatoire");
-                return;
+        findViewById(R.id.imageButtonPrev).setOnClickListener((e)->{
+            String val = textStantion.getText().toString();
+            val = val.replace("S","");
+            Integer vInt = Integer.valueOf(val);
+            if(vInt>1){
+                vInt--;
+                textStantion.setText("S"+vInt);
             }
-            if(lotTxt.trim().equals("")){
-                lotissement.setError("lotissement obligatoire");
-                return;
-            }
-            if(record_id>0){
-                db.updateRecord(record_id,ltxTxt,lotTxt);
-            }
-            else{
-                db.createRecord(ltxTxt,lotTxt,db.userConnecte.getUserId());
-            }
-            finish();
         });
 
-        findViewById(R.id.btnAddRecordItemItem).setOnClickListener((e)->{
-            String angleTxt  = editTextAngle.getText().toString();
-            String distTxt = editTextDist.getText().toString();
-            String obsTxt = editTextObs.getText().toString();
-            String codeTxt = editTextCode.getText().toString();
+        findViewById(R.id.imageButtonNext).setOnClickListener((e)->{
+            String val = textStantion.getText().toString();
+            val = val.replace("S","");
+            Integer vInt = Integer.valueOf(val);
+            vInt++;
+            textStantion.setText("S"+vInt);
+        });
 
+        findViewById(R.id.buttonInitData).setOnClickListener((e)->{
+            Intent intent = new Intent(this, RecordItem2Activity.class);
+            intent.putExtra(DB.COLUMN_ID, record_id);
+            startActivity(intent);
+            finish();
+        });
+        /*
+        findViewById(R.id.btnMap).setOnClickListener((e)->{
+            Intent intent = new Intent(this, MapsActivity.class);
+            startActivity(intent);
+            finish();
+        });
+        */
+        findViewById(R.id.btnExportLaborde).setOnClickListener((e)->{
+            Utils.exportLaborde(db.getRecord(record_id),db,this);
+        });
 
+        findViewById(R.id.btnExportBrute).setOnClickListener((e)->{
+            Utils.exportBrute(db.getRecord(record_id),db,this);
+        });
 
-            if(angleTxt.trim().equals("")){
-                editTextAngle.setError("Angle obligatoire");
-                return;
-            }
-            if(distTxt.trim().equals("")){
-                editTextDist.setError("Distance obligatoire");
-                return;
-            }
-            Long code = 0L;
+        findViewById(R.id.imageButtonAddRecordItem).setOnClickListener((e)->{
+            if(!Utils.testNotVide(editTextAngleH,"Angle Horizontal"))return;
+            if(!Utils.testNotVide(editTextAngleV,"Angle veritical"))return;
+            if(!Utils.testNotVide(editTextDistance,"Distance"))return;
+            if(!Utils.testNotVide(editTextObservation,"Observation"))return;
+
+            String angleH  = editTextAngleH.getText().toString();
+            String angelV = editTextAngleV.getText().toString();
+            String distance = editTextDistance.getText().toString();
+            String obs = editTextObservation.getText().toString();
+            String stantion = textStantion.getText().toString();
+
+            RecordItem recordItem = new RecordItem(db.getCurrentRecordItemId());
             try{
-               code = Long.valueOf(codeTxt);
+                recordItem.setAngelV(Float.valueOf(angelV));
+                recordItem.setAngleH(Float.valueOf(angleH));
+                recordItem.setDistance(Float.valueOf(distance));
+                recordItem.setObservation(obs);
+                recordItem.setStantion(stantion);
+                recordItem.setRecordId(record_id);
+
+                if(db.getCurrentRecordItemId()!=null){
+                    db.updateRecordItem(recordItem);
+                    db.setCurrentRecordItemId(null);
+                }
+                else
+                    db.createRecordItem(recordItem);
             }
-            catch (NumberFormatException exc){
-
+            catch(NumberFormatException exc){
+                Toast.makeText(getApplicationContext(), "Verifier votre valeur !!!", Toast.LENGTH_LONG).show();
+                return;
             }
+            Toast.makeText(getApplicationContext(), "donnée sauvegardé !!!", Toast.LENGTH_LONG).show();
 
+            editTextAngleH.setText("");
+            editTextAngleV.setText("");
+            editTextDistance.setText("");
+            editTextObservation.setText("");
 
-            if(db.getCurrentRecordItemId()!=null){
-                db.updateRecordItem(db.getCurrentRecordItemId(),angleTxt,distTxt,code,obsTxt);
-                db.setCurrentRecordItemId(null);
-            }
-            else
-                db.createRecordItem(record_id,angleTxt,distTxt,code,obsTxt);
-
-            editTextDist.setText("");
-            editTextObs.setText("");
-            editTextAngle.setText("");
-            editTextCode.setText("");
             List<RecordItem> recordItems1  = db.getListRecordItem(record_id);
             ListView listView1 = (ListView)findViewById(R.id.listViewItemRecordItem);
             listView1.setAdapter(new RecordItemAdapter(this,recordItems1));
         });
 
-        editTextAngle.setOnFocusChangeListener((view,v)->{
-            speechEditorText = v?editTextAngle:null;
+        editTextAngleH.setOnFocusChangeListener((view,v)->{
+            speechEditorText = v?editTextAngleH:null;
         });
-        editTextCode.setOnFocusChangeListener((view,v)->{
-            speechEditorText = v?editTextCode:null;;
+        editTextAngleV.setOnFocusChangeListener((view,v)->{
+            speechEditorText = v?editTextAngleV:null;
         });
-        editTextDist.setOnFocusChangeListener((view,v)->{
-            speechEditorText = v?editTextDist:null;;;
+        editTextDistance.setOnFocusChangeListener((view,v)->{
+            speechEditorText = v?editTextDistance:null;
         });
-        editTextObs.setOnFocusChangeListener((view,v)->{
-            speechEditorText = v?editTextObs:null;
+        editTextObservation.setOnFocusChangeListener((view,v)->{
+            speechEditorText = v?editTextObservation:null;
         });
 
 
@@ -205,20 +220,21 @@ public class RecordItem2Activity extends AppCompatActivity {
                     speechEditorText.setText(data.get(0));
                     return;
                 }
-                if(editTextAngle.getText().toString().equals("")){
-                    editTextAngle.setText(data.get(0));
+
+                if(editTextAngleH.getText().toString().equals("")){
+                    editTextAngleH.setText(data.get(0));
                     return;
                 }
-                if(editTextDist.getText().toString().equals("")){
-                    editTextDist.setText(data.get(0));
+                if(editTextAngleV.getText().toString().equals("")){
+                    editTextAngleV.setText(data.get(0));
                     return;
                 }
-                if(editTextCode.getText().toString().equals("")){
-                    editTextCode.setText(data.get(0));
+                if(editTextDistance.getText().toString().equals("")){
+                    editTextDistance.setText(data.get(0));
                     return;
                 }
-                if(editTextObs.getText().toString().equals("")){
-                    editTextObs.setText(data.get(0));
+                if(editTextObservation.getText().toString().equals("")){
+                    editTextObservation.setText(data.get(0));
                     return;
                 }
             }

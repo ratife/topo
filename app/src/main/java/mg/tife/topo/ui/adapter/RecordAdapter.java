@@ -1,31 +1,49 @@
 package mg.tife.topo.ui.adapter;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Environment;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
+import mg.tife.topo.activities.record.*;
 
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.utils.widget.ImageFilterButton;
 import androidx.constraintlayout.utils.widget.ImageFilterView;
+
+import com.google.android.gms.location.FusedLocationProviderClient;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.Array;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
 import mg.tife.topo.R;
 import mg.tife.topo.data.DB;
+import mg.tife.topo.data.model.Parametres;
 import mg.tife.topo.data.model.Record;
 import mg.tife.topo.data.model.RecordItem;
-import mg.tife.topo.ui.RecordItemActivity;
+import mg.tife.topo.util.Utils;
 
 public class RecordAdapter extends ArrayAdapter<Record> {
+    private FusedLocationProviderClient fusedLocationClient;
     DB db;
     public RecordAdapter(Context context,  List<Record> users) {
         super(context, 0, users);
@@ -44,8 +62,8 @@ public class RecordAdapter extends ArrayAdapter<Record> {
         }
         TextView ltxView = (TextView) convertView.findViewById(R.id.recordItemAngleView);
         TextView lotissementView = (TextView) convertView.findViewById(R.id.recordItemDistanceView);
-        ltxView.setText(record.getLtx());
-        lotissementView.setText(record.getLotissement());
+        ltxView.setText("TN:"+record.getTn());
+        lotissementView.setText("Parcelle:"+record.getParcelle()+" - Date:"+ record.getDate());
 
         ImageFilterView waitImage = (ImageFilterView) convertView.findViewById(R.id.imageFilterViewWait);
         ImageFilterView readyImage = (ImageFilterView) convertView.findViewById(R.id.imageFilterViewReady);
@@ -63,47 +81,42 @@ public class RecordAdapter extends ArrayAdapter<Record> {
 
 
         convertView.findViewById(R.id.recordITemBtnItemEdit).setOnClickListener((e)->{
-            Intent intent = new Intent(getContext(), RecordItemActivity.class);
+            Intent intent = new Intent(getContext(), RecordItem1Activity.class);
             intent.putExtra(DB.COLUMN_ID, record.getId());
-            intent.putExtra(DB.RECORD_COLUMN_LTX, record.getLtx());
-            intent.putExtra(DB.RECORD_COLUMN_LOTISSEMENT, record.getLotissement());
             getContext().startActivity(intent);
         });
 
-        convertView.findViewById(R.id.recordITemBtnItemExp).setOnClickListener((e)->{
-            List<RecordItem> recordItemList = db.getListRecordItem(record.getId());
-            try {
-
-                File root = Environment.getExternalStoragePublicDirectory
-                        (
-                                Environment.DIRECTORY_DOWNLOADS + "/topo/"
-                        );
-                if (!root.exists()) {
-                    root.mkdirs();
+        convertView.findViewById(R.id.recordBtnItemRemove).setOnClickListener((e)->{
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            builder.setCancelable(true);
+            builder.setTitle("Confirmation");
+            builder.setMessage("Voulez vous supprimer cette ligne : TN:" + record.getTn() + " - P:"+record.getParcelle()+" - "+record.getAdressTerrain() + " ?");
+            builder.setPositiveButton("Confirm",
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            db.deleteRecord(record.getId());
+                            Activity act = (Activity)getContext();
+                            act.finish();
+                            Intent intent = new Intent(getContext(), RecordActivity.class);
+                            getContext().startActivity(intent);
+                        }
+                    });
+            builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
                 }
-                File gpxfile = new File(root,"Export_" + record.getLtx() + ".txt");
+            });
 
-                FileWriter fileWriter = new FileWriter(gpxfile);
-                PrintWriter printWriter = new PrintWriter(fileWriter);
-
-                //FileWriter writer = new FileWriter(gpxfile);
-                int cpt = 1;
-                for(RecordItem recordItem:recordItemList){
-                    double x = recordItem.getDistance() * Math.sin(recordItem.getAngle());
-                    double y = recordItem.getDistance() * Math.cos(recordItem.getAngle());
-                    printWriter.println(cpt +","+x+","+y+","+recordItem.getObservation());
-                    cpt++;
-                }
-                printWriter.flush();
-                printWriter.close();
-                Toast.makeText(getContext(), "Saved", Toast.LENGTH_SHORT).show();
-            } catch (IOException exception) {
-                exception.printStackTrace();
-            }
+            AlertDialog dialog = builder.create();
+            dialog.show();
         });
 
 
-
+        convertView.findViewById(R.id.recordITemBtnItemExp).setOnClickListener((e)->{
+            Utils.exportLaborde(record,db,getContext());
+        });
         return convertView;
     }
+
 }

@@ -55,6 +55,12 @@
             android:background="@android:drawable/ic_menu_upload" />
 
         <androidx.constraintlayout.utils.widget.ImageFilterButton
+            android:id="@+id/recordBtnItemRemove"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?attr/actionModeCutDrawable" />
+
+        <androidx.constraintlayout.utils.widget.ImageFilterButton
             android:id="@+id/recordITemBtnItemEdit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

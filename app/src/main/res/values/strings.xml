@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">topo</string>
+    <string name="app_name">topo tech</string>
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
@@ -110,4 +110,5 @@
         "when a user tries to pick up one of cards.\n\n"
     </string>
     <string name="action_settings">Settings</string>
+    <string name="title_activity_maps">MapsActivity</string>
 </resources>

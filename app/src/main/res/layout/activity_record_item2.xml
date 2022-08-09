@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.record.RecordItem2Activity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:layout_editor_absoluteX="1dp"
+        tools:layout_editor_absoluteY="1dp">
+
+        <Button
+            android:id="@+id/btnDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Description"
+            app:icon="@android:drawable/ic_media_rew" />
+
+        <EditText
+            android:id="@+id/editTextX"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="X"
+            android:inputType="numberDecimal" />
+
+        <EditText
+            android:id="@+id/editTextY"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Y"
+            android:inputType="numberDecimal" />
+
+        <EditText
+            android:id="@+id/editTextZ"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Z"
+            android:inputType="numberDecimal" />
+
+        <EditText
+            android:id="@+id/editTextVo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="numberDecimal"
+            android:hint="Vo" />
+
+        <Button
+            android:id="@+id/buttonStartLecture"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Suivant"
+            app:icon="@android:drawable/ic_media_ff" />
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -5,19 +5,25 @@ package mg.tife.topo.data.model;
  */
 public class LoggedInUser {
 
-    private Integer userId;
+    private Long userId;
     private String displayName;
+    private String role;
 
-    public LoggedInUser(Integer userId, String displayName) {
+    public LoggedInUser(Long userId, String displayName,String role) {
         this.userId = userId;
         this.displayName = displayName;
+        this.role = role;
     }
 
-    public Integer getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
     public String getDisplayName() {
         return displayName;
+    }
+
+    public String getRole() {
+        return role;
     }
 }
